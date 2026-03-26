@@ -49,8 +49,14 @@ def upload_new_documents(anything_llm: AnythingLLM, database: DocumentDatabase, 
                 # if the date of the file is after the time that the loaded_document.upload_timestamp the load again
                 if int(local_document_modified_timestamp.strftime('%Y%m%d%H%M%S')) > int(
                         loaded_document.upload_timestamp.strftime('%Y%m%d%H%M%S')):
-                    # Update the document
-                    print("TODO: Upload document " + local_document)
+                    # Remove old version from AnythingLLM before uploading the new one
+                    if anything_llm.unload_document(loaded_document.anythingllm_document_location):
+                        database.remove_document(loaded_document.local_file_path)
+                        break
+                    else:
+                        print('Failed to remove old version of document from AnythingLLM: ' + local_document)
+                        document_loaded = True
+                        break
                 else:
                     document_loaded = True
                     break
@@ -100,7 +106,6 @@ def remove_embedded_documents(anything_llm: AnythingLLM, local_documents: list, 
         if embedded_document_local_path is None:
             # If the document path isn't in the database of local files, then delete it
             documents_to_unembed.append(embedded_document)
-            break
 
         embedded_document_found_locally = False
         for local_document in local_documents:

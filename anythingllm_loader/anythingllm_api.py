@@ -148,7 +148,7 @@ class AnythingLLM:
     def unload_document(self, document_to_unload: str):
         # remove the document
         # curl -X 'DELETE' \
-        #   'http://localhost:3001/v1/system/remove-documents' \
+        #   'http://localhost:3001/api/v1/system/remove-documents' \
         #   -H 'accept: application/json' \
         #   -H 'Content-Type: application/json' \
         #   -d '{[
@@ -164,13 +164,13 @@ class AnythingLLM:
             document_to_unload = document_to_unload.split('/')[-2]
 
         # Delete the document.
-        response: Response = requests.post('http://localhost:3001/v1/system/remove-documents',
+        response: Response = requests.delete('http://localhost:3001/api/v1/system/remove-documents',
                                            headers={
                                                'accept': 'application/json',
                                                'Content-Type': 'application/json',
                                                'Authorization': 'Bearer ' + self.config.api_key
                                            }, json={
-                "deletes": [document_to_unload]
+                "names": [document_to_unload]
             },
                                            timeout=60)
         # throw an error if the response is not 200
@@ -307,7 +307,7 @@ class AnythingLLM:
 
         # Embed the documents
         response: Response = requests.post(
-            'http://localhost:3001/api/v1/workspace' + self.config.workspace_slug + '/update-embeddings',
+            'http://localhost:3001/api/v1/workspace/' + self.config.workspace_slug + '/update-embeddings',
             headers={
                 'accept': 'application/json',
                 'Content-Type': 'application/json',
