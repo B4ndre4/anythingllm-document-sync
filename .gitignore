@@ -176,3 +176,7 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 
+AGENTS.md
+TODO.txt
+test/amici.txt
+test/An-introduction-to-neural-networks-for-beginners.pdf
